@@ -1,7 +1,9 @@
-from gpt2generator import get_generator
+from gpt2generator import GPT2Generator
+from pathlib import Path
+
 import random, os
 
-f = open("./data/seed.txt", "r")
+f = open("Impera/data/seed.txt", "r")
 texts = f.read().split("\n")
 f.close()
 
@@ -11,12 +13,14 @@ context = input()
 print("Enter count text:")
 count = int(input())
 
-models = os.walk("./models/")
-generator = get_generator(models[0], generate_num=60, temperature=0.6, top_k=40, top_p=0.9, repetition_penalty=1)
+models = [ item for item in os.listdir("Impera/models") if os.path.isdir(os.path.join("Impera/models", item)) ]
+generator = GPT2Generator("Impera/models/" + models[0], generate_num=60, temperature=0.6, top_k=40, top_p=0.9, repetition_penalty=1)
 
-f = open("result.txt", "rw+")
+f = open("result.txt", "a")
+print(count)
 for i in range(count):
-    f.write(generator.generate(random.choice(texts), context) + "\n")
+    seed = random.choice(texts)
+    f.write(seed + generator.generate(seed, context) + "\n\n")
 
     break
 
